@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Orders</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"], button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .order-list {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .order {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+
+    .order.delivered {
+      background-color: #e6ffe6;
+      border-left: 5px solid green;
+    }
+
+    .order p {
+      margin: 5px 0;
+    }
+
+    .delivered-btn {
+      background-color: #2ecc71;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+
+    .delivered-btn:hover {
+      background-color: #27ae60;
+    }
+
+    .total {
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .counter {
+      text-align: center;
+      margin-top: 10px;
+      color: #555;
+    }
+
+    .reset-btn {
+      background-color: #e74c3c;
+      margin-top: 10px;
+    }
+
+    .reset-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <h2>View Your Assigned Orders(It is just for your reference)</h2>
+
+  <form method="get" action="/driver-orders">
+    <input type="text" name="driver_id" placeholder="Enter your Driver ID" required />
+    <button type="submit">Get My Orders</button>
+  </form>
+
+  {% if orders is defined %}
+    {% if orders %}
+      <div class="order-list">
+        <h3>Assigned Orders</h3>
+        {% for order in orders %}
+          <div class="order" id="order-{{ order.id }}"
+               data-payment-mode="{{ order.payment_mode|lower }}">
+
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+            <p><strong>Address:</strong> {{ order.address }}</p>
+            <p><strong>Payment Mode:</strong> {{ order.payment_mode }}</p>
+            <p><strong>Amount:</strong> ₹{{ order.amount }}</p>
+
+            <input type="hidden" class="amount" value="{{ order.amount }}">
+
+            <button class="delivered-btn" onclick="markDelivered('{{ order.id }}')">Mark as Delivered</button>
+            <a href="/otp">Arrived</a>
+          </div>
+        {% endfor %}
+
+        <p class="counter" id="completed-count" data-total="{{ orders|length }}">
+          Delivered: 0 / {{ orders|length }}
+        </p>
+
+        <p class="total" id="total-cod">Total COD Collected: ₹0.00</p>
+
+        <!-- Reset deliveries -->
+        <form onsubmit="localStorage.removeItem('deliveredOrders'); location.reload(); return false;" style="text-align:center;">
+          <button type="submit" class="reset-btn">Reset Deliveries</button>
+        </form>
+      </div>
+    {% else %}
+      <p style="text-align: center; color: #999;">No orders assigned to this driver.</p>
+    {% endif %}
+  {% endif %}
+
+<script>
+  let completed = 0;
+  let totalCOD = 0;
+
+  const completedSet = new Set((JSON.parse(localStorage.getItem("deliveredOrders") || "[]")).map(String));
+
+  window.onload = () => {
+    document.querySelectorAll(".order").forEach(orderDiv => {
+      const orderId = orderDiv.id.replace("order-", "").toString();
+
+      if (completedSet.has(orderId)) {
+        orderDiv.classList.add("delivered");
+
+        const btn = orderDiv.querySelector("button");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Delivered";
+        }
+      }
+    });
+
+    updateUI();
+  };
+
+  function markDelivered(orderIdRaw) {
+    const orderId = orderIdRaw.toString();
+    if (completedSet.has(orderId)) return;
+
+    const orderDiv = document.getElementById("order-" + orderId);
+    if (!orderDiv) return;
+
+    orderDiv.classList.add("delivered");
+
+    const btn = orderDiv.querySelector("button");
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Delivered";
+    }
+
+    completedSet.add(orderId);
+    localStorage.setItem("deliveredOrders", JSON.stringify(Array.from(completedSet)));
+
+    updateUI();
+  }
+
+  function updateUI() {
+    const counter = document.getElementById("completed-count");
+    const total = parseInt(counter.getAttribute("data-total")) || 0;
+
+    completed = 0;
+    totalCOD = 0;
+
+    document.querySelectorAll(".order").forEach(orderDiv => {
+      const orderId = orderDiv.id.replace("order-", "").toString();
+      if (completedSet.has(orderId)) {
+        const paymentMode = orderDiv.getAttribute("data-payment-mode");
+        const amountInput = orderDiv.querySelector("input.amount");
+        const amount = parseFloat(amountInput?.value || 0);
+
+        if (paymentMode === "cod") {
+          totalCOD += amount;
+        }
+
+        completed++;
+      }
+    });
+
+    counter.textContent = `Delivered: ${completed} / ${total}`;
+    document.getElementById("total-cod").textContent = `Total COD Collected: ₹${totalCOD.toFixed(2)}`;
+  }
+</script>
+</body>
+</html>

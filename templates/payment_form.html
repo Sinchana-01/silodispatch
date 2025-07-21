@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SiloDispatch - Collect Payment</title>
+</head>
+<body>
+    <h2>SiloDispatch - Collect Payment</h2>
+
+    <p><strong>Order ID:</strong> <span id="orderIdDisplay"></span></p>
+    <p><strong>Customer Phone:</strong> <span id="phoneDisplay"></span></p>
+
+    <!-- Amount is fetched but NOT displayed -->
+    <!-- <p><strong>Amount:</strong> ₹<span id="amountDisplay"></span></p> -->
+
+    <form id="paymentForm">
+        <button type="submit">Generate UPI Payment Link</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("order_id");
+
+        const orderIdDisplay = document.getElementById("orderIdDisplay");
+        const phoneDisplay = document.getElementById("phoneDisplay");
+        const amountDisplay = document.getElementById("amountDisplay");
+        const messageDiv = document.getElementById("message");
+        const form = document.getElementById("paymentForm");
+
+        if (!orderId) {
+            messageDiv.innerHTML = `<p style="color:red;">❌ Missing order ID</p>`;
+            form.style.display = "none";
+        } else {
+            orderIdDisplay.innerText = orderId;
+
+            // ✅ Fetch order info from backend
+            fetch(`/payment/orders/${orderId}/info`)
+                .then(res => res.json())
+                .then(data => {
+                    // amount is fetched but not shown
+                    const amountInRupees = (data.amount / 100).toFixed(2);
+                    // amountDisplay.innerText = amountInRupees; // Hidden
+                    phoneDisplay.innerText = data.customer_phone;
+                })
+                .catch(err => {
+                    console.error("Failed to fetch order info:", err);
+                    messageDiv.innerHTML = `<p style="color:red;">❌ Could not load order details</p>`;
+                    form.style.display = "none";
+                });
+
+            // ✅ Handle payment form submission
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                try {
+                    const response = await fetch(`/payment/create-upi-payment/${orderId}`, {
+                        method: "POST"
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.text();
+                        messageDiv.innerHTML = `<p style="color:red;">❌ ${error}</p>`;
+                        return;
+                    }
+
+                    const data = await response.json();
+                    messageDiv.innerHTML = `
+                        <p>✅ Payment Link Created</p>
+                        <p><a href="${data.payment_link}" target="_blank">Click to Pay</a></p>
+                    `;
+
+                    // Optional: auto-redirect
+                    window.location.href = data.payment_link;
+
+                } catch (err) {
+                    messageDiv.innerHTML = `<p style="color:red;">❌ Error: ${err.message}</p>`;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ER Diagram - SiloDispatch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 30px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    ul {
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Entity Relationship Diagram - SiloDispatch</h1>
+
+    <img src="/static/erd.jpg" alt="ERD Diagram">
+
+    <h3>Entity Explanations</h3>
+    <ul>
+      <li><strong>Order</strong>: Represents customer orders including address, weight, mode of payment, and OTP status.</li>
+      <li><strong>Driver</strong>: Delivery personnel who fulfill batches of orders.</li>
+      <li><strong>Batch</strong>: A collection of up to 25 orders grouped together for optimized delivery.</li>
+      <li><strong>Payment</strong>: Tracks whether payment was made via COD, UPI, or prepaid and the settlement status.</li>
+      <li><strong>Breadcrumb</strong>: Stores the GPS trail for driver movement, used for tracking.</li>
+    </ul>
+
+    <a href="/docs/home">← Back to Documentation Home</a>
+  </div>
+
+</body>
+</html>

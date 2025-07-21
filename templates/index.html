@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SiloDispatch Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .card a, .card button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .card a:hover, .card button:hover {
+      background-color: #2980b9;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SiloDispatch Control Panel</h1>
+    <p>Hackathon Project - Backend & Data Track</p>
+  </header>
+
+  <main>
+  <!-- Batch Creation -->
+    <div class="card">
+      <h3>Order Upload</h3>
+      <p>Upload 500 orders (CSV or API), generate batches by weight/pincode.</p>
+      <a href='http://127.0.0.1:8000/orders/upload'>Order Upload</a>
+      <a href='http://127.0.0.1:8000/drivers/upload'>Driver Upload</a>
+    </div>
+
+    <!-- Batch Creation -->
+    <div class="card">
+      <h3>Batch Creation</h3>
+      <p>Upload 500 orders (CSV or API), generate batches by weight/pincode.</p>
+      <a href='http://localhost:8000/batches/generate'>Generate Batches</a>
+    </div>
+
+    <!-- Driver Assignment -->
+     <div class="card">
+        <h3>🛻 Driver Assignment</h3>
+        <p>Assign available drivers to batches manually or auto-assign based on pincode.</p>
+        <a href="http://127.0.0.1:8000/assign-driver-form">Open Driver Assignment UI</a>
+    </div>
+
+      
+
+    <!-- Payments -->
+    
+    <!-- End-of-Day Settlement -->
+    <div class="card">
+      <h3>📊 End-of-Day Settlement</h3>
+      <p>Ledger to track cash collected by each driver. CSV export.</p>
+      <a href="http://localhost:8000/settlements/dashboard">Settle Ledger</a>
+    </div>
+
+    <!-- Docs -->
+    <div class="card">
+      <h3>📁 Docs & Architecture</h3>
+      <p>View ERD, sequence diagrams, and deployment instructions.</p>
+      <a href="http://localhost:8000/docs/home">View Docs</a>
+    </div>
+
+
+
+    
+  </main>
+
+  <footer>
+    SiloDispatch Hackathon 2025 • Built with FastAPI + PostgreSQL + Twilio
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SiloDispatch - System Architecture</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      background: #f9f9f9;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>SiloDispatch - System Architecture</h1>
+
+  <div class="section">
+    <h2>🔧 Tech Stack</h2>
+    <ul>
+      <li><strong>Backend:</strong> FastAPI (Python)</li>
+      <li><strong>Database:</strong> PostgreSQL (via SQLAlchemy ORM)</li>
+      <li><strong>Frontend:</strong> Plain HTML + Jinja2 templates</li>
+      <li><strong>Payment:</strong> Razorpay (UPI/COD/prepaid)</li>
+      <li><strong>OTP Delivery:</strong> AWS SNS</li>
+      <li><strong>Tracking:</strong> Simulated GPS Breadcrumbs</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📦 High-Level Architecture</h2>
+    <p>The architecture of SiloDispatch includes the following major flows:</p>
+    <img src="https://i.imgur.com/5YrjNTX.png" alt="System Architecture Diagram">
+    <p><em>This shows the flow from order intake, clustering, driver assignment, OTP/payment, all the way to settlement & export.</em></p>
+  </div>
+
+  <div class="section">
+    <h2>🔁 Modules Overview</h2>
+
+    <h3>1. Order Intake</h3>
+    <ul>
+      <li>Upload 500 orders via CSV or API</li>
+      <li>Fields: amount, payment_mode, address, lat/lng, etc.</li>
+    </ul>
+
+    <h3>2. Order Clustering & Batch Creation</h3>
+    <ul>
+      <li>KMeans clustering by lat/lng</li>
+      <li>Each batch capped at 25kg or 30 orders</li>
+      <li>Stored in `batches` table</li>
+    </ul>
+
+    <h3>3. Driver Assignment</h3>
+    <ul>
+      <li>Drivers stored in `drivers` table</li>
+      <li>Auto-assign nearest available driver based on centroid location</li>
+      <li>Manual fallback via form</li>
+    </ul>
+
+    <h3>4. OTP & Payment Flow</h3>
+    <ul>
+      <li>OTP sent via AWS SNS</li>
+      <li>Supports COD, Prepaid, and Razorpay UPI links</li>
+      <li>Webhook confirms UPI success</li>
+    </ul>
+
+    <h3>5. Settlement & Reporting</h3>
+    <ul>
+      <li>Live driver-wise COD totals (based on `orders`)</li>
+      <li>One-click settle posts into `settlements` table</li>
+      <li>CSV export for finance</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🗃️ Database Relations (Short Summary)</h2>
+    <ul>
+      <li><code>Order</code>: Links to driver and batch</li>
+      <li><code>Batch</code>: Contains clustered order list</li>
+      <li><code>Driver</code>: Gets assigned batches</li>
+      <li><code>Settlement</code>: Records cash reconciliation</li>
+      <li><code>Breadcrumb</code>: (Optional) Location tracking</li>
+    </ul>
+  </div>
+
+  <a href="/docs/home">← Back to Docs</a>
+</body>
+</html>

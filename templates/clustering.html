@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clustering Logic - SiloDispatch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    ul {
+      line-height: 1.7;
+    }
+    h2 {
+      color: #34495e;
+      margin-top: 25px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Clustering Logic - Order Batching & Driver Assignment</h1>
+
+    <h2>1. Order Batching</h2>
+    <ul>
+      <li>Orders are grouped into <strong>batches</strong> of max 25kg or max 30 orders.</li>
+      <li>Clustering is based on:
+        <ul>
+          <li><strong>Pincode</strong> — Simple & fast grouping of nearby addresses.</li>
+          <li><strong>Geo-based clustering</strong> — Uses latitude/longitude with Haversine or K-Means.</li>
+        </ul>
+      </li>
+      <li>Each batch is assigned a unique ID and stored in the <code>batches</code> table.</li>
+    </ul>
+
+    <h2>2. Driver Assignment</h2>
+    <ul>
+      <li>Drivers are matched to batches based on proximity to cluster centroid.</li>
+      <li>If GPS data is available, <strong>Haversine distance</strong> is calculated between driver and batch center.</li>
+      <li>Driver with lowest distance is auto-assigned (unless done manually).</li>
+    </ul>
+
+    <h2>3. Optimization</h2>
+    <ul>
+      <li>Improves delivery speed and reduces fuel usage.</li>
+      <li>Logic can be adapted to traffic or time windows in future versions.</li>
+    </ul>
+
+    <a href="/docs/home">← Back to Documentation Home</a>
+  </div>
+</body>
+</html>

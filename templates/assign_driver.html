@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assign Driver to Batch</title>
+</head>
+<body>
+    <h2>Assign Driver to Batch</h2>
+    
+    <!-- Manual Assignment Form -->
+    <form action="/assign-driver-form" method="post">
+        <label for="batch_id">Select Batch:</label>
+        <select name="batch_id" required>
+            {% for batch in batches %}
+                <option value="{{ batch.id }}">{{ batch.id }} - {{ batch.pincode }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label for="driver_id">Select Driver:</label>
+        <select name="driver_id" required>
+            {% for driver in drivers %}
+                <option value="{{ driver.id }}">{{ driver.name }} ({{ driver.phone }})</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <input type="submit" value="Assign">
+    </form>
+
+    <!-- Divider -->
+    <hr style="margin: 40px 0;">
+
+    <!-- Auto-Assign Button -->
+    <form action="/auto-assign-drivers" method="post">
+        <button type="submit" style="padding:10px 20px; font-size:16px; background-color:green; color:white;">
+            🚛 Auto-Assign All Drivers (Fuel Optimized)
+        </button>
+    </form>
+</body>
+</html>

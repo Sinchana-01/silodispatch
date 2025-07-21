@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order OTP Interface</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    hr {
+      margin: 30px 0;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .verified {
+      color: green;
+      font-weight: bold;
+    }
+    .not-verified {
+      color: red;
+      font-weight: bold;
+    }
+.success-banner {
+  background-color: lightgreen;
+  color: green;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.error-banner {
+  background-color: lightcoral;
+  color: darkred;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+</style>
+
+</head>
+<body>
+
+{% if message %}
+  {% set bg_color = "success-banner" if status == "success" else "error-banner" %}
+  <div class="{{ bg_color }}">
+    {{ message }}
+  </div>
+{% endif %}
+
+
+
+  <h2>Trigger WhatsApp OTP</h2>
+  <form method="POST" action="/orders/trigger_otp_form">
+    <label>Order ID:</label>
+    <input type="text" name="order_id" id="trigger_order_id" required>
+    <button type="submit">Send OTP via WhatsApp</button>
+  </form>
+
+  <hr>
+
+
+  <h2>Verify OTP</h2>
+  <form method="POST" action="/orders/verify_otp_form">
+    <label>Order ID:</label>
+    <input type="text" name="order_id" required>
+
+    <label>Enter OTP:</label>
+    <input type="text" name="submitted_otp" required>
+
+    <button type="submit">Verify OTP</button>
+  </form>
+
+
+  
+</body>
+</html>

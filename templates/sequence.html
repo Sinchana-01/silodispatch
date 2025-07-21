@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sequence Diagram - SiloDispatch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    ul {
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sequence Diagram - Order to Delivery Flow</h1>
+
+    <img src="/static/seq.jpg" alt="Sequence Diagram">
+
+    <h3>Steps in the Sequence</h3>
+    <ul>
+      <li><strong>Customer</strong> places an order via API or frontend.</li>
+      <li><strong>System</strong> validates OTP and confirms payment (COD/UPI/Prepaid).</li>
+      <li><strong>Batching</strong> logic runs and clusters orders based on weight/pincode/location.</li>
+      <li><strong>Driver</strong> is assigned automatically or manually via UI.</li>
+      <li><strong>Delivery</strong> happens; COD payments are collected and status updated.</li>
+      <li><strong>Settlement</strong> dashboard shows cash owed by each driver for reconciliation.</li>
+    </ul>
+
+    <a href="/docs/home">← Back to Documentation Home</a>
+  </div>
+</body>
+</html>

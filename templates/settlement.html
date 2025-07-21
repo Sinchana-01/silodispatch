@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Settlement Dashboard</title>
+</head>
+<body>
+  <h1>Live COD Totals</h1>
+  <button onclick="loadData()">Refresh</button>
+  <button onclick="downloadCSV()">Download CSV</button>
+
+  <table border="1" id="dataTable">
+    <tr><th>Driver ID</th><th>Name</th><th>COD Amount</th><th>Settle</th></tr>
+  </table>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("/settlements/live");
+      const data = await res.json();
+      const table = document.getElementById("dataTable");
+
+      table.innerHTML = '<tr><th>Driver ID</th><th>Name</th><th>COD Amount</th><th>Settle</th></tr>';
+
+      data.drivers.forEach(driver => {
+        const row = table.insertRow();
+        row.innerHTML = `
+          <td>${driver.driver_id}</td>
+          <td>${driver.driver_name}</td>
+          <td>₹${driver.outstanding_cod}</td>
+          <td><button onclick="settle(${driver.driver_id})">Settle</button></td>
+        `;
+      });
+    }
+
+    async function settle(driverId) {
+      const res = await fetch(`/settlements/settle/${driverId}`, {
+        method: "POST"
+      });
+      const result = await res.json();
+      alert(result.message);
+      loadData();
+    }
+
+    function downloadCSV() {
+      window.location.href = "/settlements/export/csv";
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
